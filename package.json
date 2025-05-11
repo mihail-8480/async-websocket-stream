@@ -1,6 +1,6 @@
 {
   "name": "@mojsoski/async-websocket-stream",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Websocket stream extension for @mojsoski/async-stream",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
@@ -13,7 +13,9 @@
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "@types/ws": "^8.18.1",
+    "ws": "^8.18.2"
   },
   "scripts": {
     "watch": "npx tsc --watch",
@@ -28,8 +30,6 @@
   },
   "dependencies": {
     "@mojsoski/async-event-stream": "^1.0.0",
-    "@mojsoski/async-stream": "^1.0.0",
-    "@types/ws": "^8.18.1",
-    "ws": "^8.18.2"
+    "@mojsoski/async-stream": "^1.0.0"
   }
 }
