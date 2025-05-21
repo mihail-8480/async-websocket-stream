@@ -58,6 +58,32 @@ export const NoEncoding: WebsocketStreamEncoding<
   },
 };
 
+function combineAbortSignals(...signals: (AbortSignal | undefined)[]) {
+  const controller = new AbortController();
+
+  function forwardAbort(signal: AbortSignal) {
+    if (signal.aborted) {
+      controller.abort(signal.reason);
+    } else {
+      signal.addEventListener(
+        "abort",
+        () => {
+          controller.abort(signal.reason);
+        },
+        { once: true }
+      );
+    }
+  }
+
+  for (const signal of signals) {
+    if (signal) {
+      forwardAbort(signal);
+    }
+  }
+
+  return controller.signal;
+}
+
 export const JsonEncoding: WebsocketStreamEncoding<JsonValue, JsonValue> = {
   decode(data: WebSocket.RawData): JsonValue {
     return JSON.parse(data.toString());
@@ -80,7 +106,19 @@ export async function getWebsocketStream<TOutput, TInput>(
     .map(([data]) => encoding.decode(data));
 
   const readStream = buffer
-    ? readTransform.buffer(buffer !== true ? buffer : undefined).stream()
+    ? readTransform
+        .buffer(
+          buffer !== true
+            ? {
+                ...buffer,
+                signal: combineAbortSignals(
+                  abortController.signal,
+                  buffer.signal
+                ),
+              }
+            : { signal: abortController.signal }
+        )
+        .stream()
     : readTransform.stream();
 
   const writeStream = getCallbackWriteStream<TInput>((item, resolve) =>

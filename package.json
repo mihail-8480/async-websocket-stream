@@ -1,6 +1,6 @@
 {
   "name": "@mojsoski/async-websocket-stream",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Websocket stream extension for @mojsoski/async-stream",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
